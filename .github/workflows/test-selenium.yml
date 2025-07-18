@@ -32,10 +32,9 @@ jobs:
         sudo apt update
         sudo apt install microsoft-edge-dev
 
-    - name: Download Edge WebDriver from GitHub
+    - name: Unzip local Edge WebDriver
       run: |
-        wget https://github.com/RenzoMedina/test-selenium/assets/edgedriver_linux64.zip
-        unzip edgedriver_linux64.zip
+        unzip assets/edgedriver_linux64.zip
         sudo mv msedgedriver /usr/local/bin/
     
     - name: Check Edge WebDriver
