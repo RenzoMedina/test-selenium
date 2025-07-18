@@ -55,8 +55,8 @@ jobs:
       run: msedgedriver --version
 
     #Run test of pytest with selenium
-    - name: Run Selenium Tests
-      run: pytest 
+    #- name: Run Selenium Tests
+    #  run: pytest 
 
     #Run test for generate report xml  
     - name: Run Selenium Tests with Report XML
