@@ -29,7 +29,7 @@ jobs:
         path: /home/runner/.cache/msedgedriver
         key: edgedriver-125.0.2535.85
   
-    #Installa dependencies of python 
+    #Install dependencies of python 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -60,7 +60,7 @@ jobs:
 
     #Run test for generate report xml  
     - name: Run Selenium Tests with Report XML
-      run: pytest --junitxml=test-report.xml
+      run: pytest --html=report.html
 
     #Lastly upload artifact
     - name: Updload Artifact
@@ -68,6 +68,6 @@ jobs:
       if: always()
       with:
         name: pytest-report
-        path: test-report.xml
+        path: report.html
 
     
