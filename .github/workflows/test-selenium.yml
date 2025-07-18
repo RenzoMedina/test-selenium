@@ -11,25 +11,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+    #Checkout default
     - name: Checkout
       uses: actions/checkout@v4
     
+    #action for python with version
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: "3.10"
     
+    #cache of Edge WebDriver
     - name: Cache Edge WebDriver
       uses: actions/cache@v4
       with:
         path: /home/runner/.cache/msedgedriver
         key: edgedriver-125.0.2535.85
   
+    #Installa dependencies of python 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    #Install Microsoft Edge 
     - name: Install Microsoft Edge
       run: |
         curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
@@ -38,32 +44,25 @@ jobs:
         sudo apt update
         sudo apt install microsoft-edge-dev
     
-    - name: Download Edge WebDriver (if not cached)
-      run: |
-        if [ ! -f /home/runner/.cache/msedgedriver/msedgedriver ]; then
-          wget https://msedgedriver.azureedge.net/125.0.2535.85/edgedriver_linux64.zip
-          unzip edgedriver_linux64.zip
-          mkdir -p /home/runner/.cache/msedgedriver
-          mv msedgedriver /home/runner/.cache/msedgedriver/
-        fi
-
-    - name: Move WebDriver to PATH
-      run: sudo cp /home/runner/.cache/msedgedriver/msedgedriver /usr/local/bin/
-    
+    #Decrypt web driver for run after the test
     - name: Unzip local Edge WebDriver
       run: |
         unzip assets/edgedriver_linux64.zip
         sudo mv msedgedriver /usr/local/bin/
     
+    #Check if installed web driver
     - name: Check Edge WebDriver
       run: msedgedriver --version
 
+    #Run test of pytest with selenium
     - name: Run Selenium Tests
       run: pytest 
-    
-    - name: Run Selenium Tests
+
+    #Run test for generate report xml  
+    - name: Run Selenium Tests with Report XML
       run: pytest --junitxml=test-report.xml
 
+    #Lastly upload artifact
     - name: Updload Artifact
       uses: actions/upload-artifact@v4
       if: always()
