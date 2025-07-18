@@ -19,6 +19,12 @@ jobs:
       with:
         python-version: "3.10"
     
+    - name: Cache Edge WebDriver
+      uses: actions/cache@v4
+      with:
+        path: /home/runner/.cache/msedgedriver
+        key: edgedriver-125.0.2535.85
+  
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -31,7 +37,19 @@ jobs:
         sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge-dev.list'
         sudo apt update
         sudo apt install microsoft-edge-dev
+    
+    - name: Download Edge WebDriver (if not cached)
+      run: |
+        if [ ! -f /home/runner/.cache/msedgedriver/msedgedriver ]; then
+          wget https://msedgedriver.azureedge.net/125.0.2535.85/edgedriver_linux64.zip
+          unzip edgedriver_linux64.zip
+          mkdir -p /home/runner/.cache/msedgedriver
+          mv msedgedriver /home/runner/.cache/msedgedriver/
+        fi
 
+    - name: Move WebDriver to PATH
+      run: sudo cp /home/runner/.cache/msedgedriver/msedgedriver /usr/local/bin/
+    
     - name: Unzip local Edge WebDriver
       run: |
         unzip assets/edgedriver_linux64.zip
